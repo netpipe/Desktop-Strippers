@@ -1,0 +1,6 @@
+
+* make a kde || gtk || Xlib version of opengirl which display them on 
+  a transparent window instead of the rootwindow
+* look to the bk files to find if there are other infos to parse 
+* sound ??
+* check leak memory problem

@@ -1,0 +1,52 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH OPENGIRL 1 "November  1, 2001"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+opengirl \- show girls on your Desktop
+.SH SYNOPSIS
+.B opengirl
+.RI [ options ] " files" ... or
+.br
+.B opengirl 
+.RI [ options ]  " \-d directory"
+.SH DESCRIPTION
+This manual page documents briefly .B opengirl.
+Opengirl is a program that show bk files ( the ones used by virtuagirl)
+on the rootwindow of your desktop.
+.SH OPTIONS
+.TP
+.B \-d directory\tspecify the dir in which resides virtua girl animation
+.TP
+.B \-o outdir\t\tsave frames on outdir directory.
+.TP
+.B \-s seconds\tseconds to wait between girls (default 180)
+.TP
+.B \-x num\t\tx-offset from bottom-left of the screen
+.TP
+.B \-y num\t\ty-offset from bottom-left of the screen
+.TP
+.B \-z \t\t\t2x/3x/4x the girl
+.TP
+.B \-h \t\t\thelp
+
+.SH KNOWN BUGS
+Currently it does not work on kde.\n
+.br
+Some bk files cannot be reproduced.
+
+.SH AUTHOR
+Written by Samuele Giovanni Tonon <samu@linuxasylum.net>,

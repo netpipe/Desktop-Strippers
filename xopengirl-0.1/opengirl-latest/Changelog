@@ -1,0 +1,13 @@
+0.7   :
+	* Fixed some leak memory problem thanks To Michelle Daenzer
+	* better X code :-))
+0.5   :
+	* added strip info on the print
+	* fixed some problem of resizing of the girl
+
+0.4.5b:	 
+	* resolved an annoy Xlib seq call when you do a killall -USR1 opengirl
+        * resolved the delay of -s <sec> even when you kill the application
+
+0.4.5 : 
+	* first version of the Changelog file :-))

@@ -1,0 +1,82 @@
+		OPENGIRL
+
+******** AND THE THANKS GOES TO *********
+
+
+Mark-Jason Dominus <mjd@plover.com>: for 
+	making readbk, the program from which
+	i started to make opengirl, and for
+	suffering my emails :-))
+
+Illo De Illis: to help me on speeding up routines 
+	and cleaning the code 
+	       
+Luca "dev" Devitis : to help me on cleaning the web page 
+	and then choosing to mantain it 
+
+Valerio "Valdez" Paolini: for hosting the site :-))
+
+All my beta testers: that continuosly tested for 
+LOOOOOONG hours the program :-))
+
+
+*****************************************
+
+
+******** INSTALLATION ******** 
+	
+* To compile it simply type make
+* You need X11 libs and includes 
+* do a make install to install them.  
+
+
+
+******** USAGE ******** 
+
+* You can run  opengirl in two ways : by specifying the directory ( with -d option ) 
+  in which you have all your bk files; it will start randomly to show them until you ^C
+  it .
+  the second way is by specifying the files you want to show, after showing them 
+  it will quit.
+  
+* These are the options 
+
+	-d <directory>
+	-h help
+	-s <seconds>
+	-f <integer>
+	-x <x-axis offset>
+	-y <y-axis offset>
+	-z 
+	
+-d directory : is the dir in which you have the bk? files of virtuagirl 
+	( usually /<path to win partition>/Program File/vg ) .
+
+-h :shows the help
+
+-s seconds : the seconds you want to wait between an animation and another 
+
+-f integer : this is the delay in ms to display next frame (def 80000)
+-x num : the offset from the left of your screen
+
+-y num : the offset from the bottom of your screen
+
+-z : the zoom for the girl ( it's cumulative .. try it :-))) )
+
+
+
+when opengirl is running, you can change the girl by simply sending a -USR1 signal 
+to the program with  killall -USR1 opengirl
+
+
+******** LAST WORDS ********
+
+	have fun with it 
+
+for bugs: 	samu  <samu@linuxasylum.net>
+for help, suggestion: samu  <samu@linuxasylum.net>
+for newer bk files:  http://www.virtuagirl.com
+for flames :   william.gates.III@microsoft.com  :-)
+
+
+
