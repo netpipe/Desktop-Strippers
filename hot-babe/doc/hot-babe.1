@@ -1,0 +1,78 @@
+.TH HOT\-BABE 1 "September 3, 2012"
+.\" Please adjust this date whenever revising the manpage.
+.SH NAME
+hot\-babe \- is a small graphical utility which displays the system 
+activity in a very special way.
+.SH SYNOPSIS
+.B hot\-babe
+.RI [ options ]
+.SH DESCRIPTION
+.B hot\-babe
+is a small graphical utility which displays the system 
+activity in a very special way. When the CPU is idle, it displays a 
+dressed girl, and when the activity goes up, as the temperature 
+increases, the girl begins to undress, to finish totally naked when the 
+system activity reaches 100%. Of course, if you can be shocked by 
+nudity, don't use it!
+.SH OPTIONS
+As for now, \fBhot\-babe\fP supports a few command\-line options:
+.TP
+.B \-h, \-\-help
+display a small help message and exit.
+.TP
+.B \-t, \-\-threshold n
+ensure that only the first picture (totally dressed girl) as long as the 
+system activity is below n%.
+.TP
+.B \-d, \-\-delay
+n update the display every n milliseconds.
+.TP
+.B \-i, \-\-incremental
+ponder every sample with time, the result is a somewhat smoother 
+animation, and the cpu has to be 100% for a long time before the girl 
+will be totally naked, and the cpu has to be at 0% for a long time for 
+the girl to dress totally.
+.TP
+.B \-N, \-\-noNice
+Don't consider reniced processes. This is usefull if you use seti@home 
+or distributed.net, which always eat almost all the CPU.
+.TP
+.B \-n, \-\-nice
+n Put the hot\-babe process in nice n.
+.TP
+.B \-D, \-\-dir
+Directory give the directory where hot\-babe must load the pictures.
+.TP
+.B \-g, \-\-geometry
+Use the specified geometry (only position is supported {+|-}x{+|x}y).
+.TP
+.B \-c, \-\-composite
+Force hot-babe to use compositing. The default is to autodetect compositing.
+.TP
+.B \-C, \-\-nocomposite
+Force hot-babe to not using compositing.
+.TP
+.B \-v, \-\-version
+Show version and exit.
+.SH FILES
+.TP
+.B ~/.config/hot\-babe/config
+User configuration file. Put any possible long or short option. Empty 
+lines and whatever after a # are ignored.
+.P
+Here is an example:
+.RS
+.nf
+#threshold 30
+incremental
+#noNice
+#n 5
+#delay 100
+#dir hb01
+#geometry +0-0
+.fi
+.RE
+.br
+.SH AUTHOR
+This page has been updated by Cyprien <cyprien33@laposte.net> and Allan 
+Wirth <allan@allanwirth.com>
