@@ -55,7 +55,7 @@ int load_anim( HotBabeAnim *anim, gchar *dirname )
   /* description file */
   
   strncpy( filename, dirname, 512 );
-  strcat( filename, "/descr" );
+  strcat( filename, "/description" );
   if( (fd = fopen( filename, "r" )) == NULL ) {
     perror( filename );
     return 3;
