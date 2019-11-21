@@ -15,7 +15,7 @@
 #ifndef _DEF_H
 #define _DEF_H
 
-#define DESCR "descr"
+#define DESCR "description"
 
 #define VERSION "0.4"
 
