@@ -35,7 +35,8 @@ public:
         // 2. Setup Sequential PNG Core Engine
         m_currentFrame = 0;
         m_animationTimer = new QTimer(this);
-      //  connect(m_animationTimer, &QTimer::timeout, this, &DesktopDancer::nextFrame);
+
+      //  connect(m_animationTimer, &QTimer::timeout, this, &DesktopDancer::nextFrame); // plays all the frames
 
         if (!folderPath.isEmpty() && QDir(folderPath).exists()) {
             loadPngSequence(folderPath);
@@ -103,7 +104,11 @@ private:
     void updateFrameByCpu() {
         // 1. Get CPU Temp (Example using a placeholder for smctemp)
         QProcess proc;
+#ifdef __APPLE__
         proc.start( QApplication::applicationDirPath() + "/smctemp", QStringList() << "-c"); // Example smctemp call
+#else
+           proc.start( QApplication::applicationDirPath() + "/test", QStringList() << "-c"); // Example smctemp call
+#endif
         proc.waitForFinished();
         double temp = proc.readAllStandardOutput().toDouble();
 
