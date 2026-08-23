@@ -16,6 +16,8 @@
 #include <QStringList>
 #include <qDebug>
 #include <qprocess.h>
+#include <QGraphicsOpacityEffect>
+#include <QPropertyAnimation>
 //
 
 class DesktopDancer : public QLabel {
@@ -33,7 +35,7 @@ public:
         // 2. Setup Sequential PNG Core Engine
         m_currentFrame = 0;
         m_animationTimer = new QTimer(this);
-        connect(m_animationTimer, &QTimer::timeout, this, &DesktopDancer::nextFrame);
+      //  connect(m_animationTimer, &QTimer::timeout, this, &DesktopDancer::nextFrame);
 
         if (!folderPath.isEmpty() && QDir(folderPath).exists()) {
             loadPngSequence(folderPath);
@@ -41,6 +43,17 @@ public:
             // Trigger selection safely on application launch
             QTimer::singleShot(100, this, &DesktopDancer::selectFolder);
         }
+
+
+        //new
+        m_opacityEffect = new QGraphicsOpacityEffect(this);
+        this->setGraphicsEffect(m_opacityEffect);
+        m_fadeAnimation = new QPropertyAnimation(m_opacityEffect, "opacity", this);
+        m_fadeAnimation->setDuration(150); // Fast fade
+
+        QTimer *timer = new QTimer(this);
+        connect(timer, &QTimer::timeout, this, &DesktopDancer::updateFrameByCpu);
+        timer->start(1500); // Check every 500ms
     }
 
 public slots:
@@ -85,6 +98,37 @@ private:
         if (m_frameFiles.isEmpty()) return;
         m_currentFrame = (m_currentFrame + 1) % m_frameFiles.size();
         displayFrame(m_currentFrame);
+    }
+
+    void updateFrameByCpu() {
+        // 1. Get CPU Temp (Example using a placeholder for smctemp)
+        QProcess proc;
+        proc.start( QApplication::applicationDirPath() + "/smctemp", QStringList() << "-c"); // Example smctemp call
+        proc.waitForFinished();
+        double temp = proc.readAllStandardOutput().toDouble();
+
+        // 2. Map Temp to Image Index (Assuming e.g., 30-90°C range)
+        int index = (int)((temp - 30) / 60 * m_frameFiles.size());
+        index = qBound(0, index, m_frameFiles.size() - 1);
+
+        if (index != m_currentFrame) {
+            // 3. Trigger Smooth Transition
+            m_targetFrame = index;
+            m_fadeAnimation->setStartValue(m_opacityEffect->opacity());
+            m_fadeAnimation->setEndValue(0.0);
+            connect(m_fadeAnimation, &QPropertyAnimation::finished, this, &DesktopDancer::changeImage);
+            m_fadeAnimation->start();
+        }
+    }
+
+    void changeImage() {
+        disconnect(m_fadeAnimation, &QPropertyAnimation::finished, this, &DesktopDancer::changeImage);
+        // Load image, then fade in
+        setPixmap(QPixmap(m_frameFiles[m_targetFrame].absoluteFilePath()));
+        m_fadeAnimation->setStartValue(0.0);
+        m_fadeAnimation->setEndValue(1.0);
+        m_fadeAnimation->start();
+        m_currentFrame = m_targetFrame;
     }
 
     void displayFrame(int index) {
@@ -179,6 +223,11 @@ private:
     int m_currentFrame;
     QTimer *m_animationTimer;
     QPoint m_dragPosition;
+    QGraphicsOpacityEffect *m_opacityEffect;
+    QPropertyAnimation *m_fadeAnimation;
+   // int m_currentFrame;
+    int m_targetFrame;
+   // QFileInfoList m_frameFiles;
 };
 
 int main(int argc, char *argv[]) {
