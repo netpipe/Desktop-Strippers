@@ -86,7 +86,7 @@ public slots:
     }
 
     void selectFolder() {
-        QString dirPath = QFileDialog::getExistingDirectory(this, "Select Character Sequence Folder", "");
+        QString dirPath = QApplication::applicationDirPath() + "/hb01"; //QFileDialog::getExistingDirectory(this, "Select Character Sequence Folder", "");
         if (!dirPath.isEmpty()) {
             loadPngSequence(dirPath);
         } else if (m_frameFiles.isEmpty()) {
@@ -113,7 +113,7 @@ private:
         double temp = proc.readAllStandardOutput().toDouble();
 
         // 2. Map Temp to Image Index (Assuming e.g., 30-90°C range)
-        int index = (int)((temp - 30) / 60 * m_frameFiles.size());
+        int index = (int)((temp - 60) / 60 * m_frameFiles.size());
         index = qBound(0, index, m_frameFiles.size() - 1);
 
         if (index != m_currentFrame) {
