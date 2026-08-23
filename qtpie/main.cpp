@@ -15,6 +15,9 @@
 #include <QUrl>
 #include <QStringList>
 #include <qDebug>
+#include <qprocess.h>
+//
+
 class DesktopDancer : public QLabel {
     Q_OBJECT
 
@@ -65,7 +68,7 @@ public slots:
         displayFrame(0);
 
         // Loop framing intervals (33ms ~ 30 FPS. Increase to 41ms/66ms if too fast)
-        m_animationTimer->start(41);
+        m_animationTimer->start(400);
     }
 
     void selectFolder() {
@@ -135,6 +138,30 @@ protected:
             event->acceptProposedAction();
         }
     }
+
+#ifdef __APPLE__
+   QString getMacCpuTemperature() {
+        QProcess process; // Using smctemp as an example so it runs without requiring sudo
+        process.start("smctemp", QStringList() << "-c");
+        if(process.waitForFinished()) {
+            QString output = process.readAllStandardOutput().trimmed();
+            qDebug() << "CPU Temperature Output:" << output;
+            return output;
+        }         else { qDebug() << "Failed to execute temperature command.";
+        }
+	}
+
+    void getMacCpuUsage() {
+        QProcess process;
+        process.start("sysctl", QStringList() << "vm.loadavg");
+
+        if (process.waitForFinished()) {
+            QString output = process.readAllStandardOutput().trimmed();
+            // Output looks like: vm.loadavg: 2.15 1.98 2.03 (1, 5, and 15 minute averages)
+            qDebug() << "CPU Load Average:" << output;
+        }
+    }
+#endif
 
     void dropEvent(QDropEvent *event) override {
         const QMimeData *mimeData = event->mimeData();
