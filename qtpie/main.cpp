@@ -25,7 +25,7 @@ class DesktopDancer : public QLabel {
     Q_OBJECT
 
 public:
-    DesktopDancer(QString folderPath = "", QWidget *parent = nullptr) : QLabel(parent) {
+    DesktopDancer(QString folderPath = QApplication::applicationDirPath()+"/hb01", QWidget *parent = nullptr) : QLabel(parent) {
         // 1. Native macOS desktop overlay framing settings
      //   setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::SubWindow);
          setWindowFlags(Qt::FramelessWindowHint );
@@ -55,12 +55,31 @@ public:
 
         QTimer *timer = new QTimer(this);
         #ifndef player
-        connect(timer, &QTimer::timeout, this, &DesktopDancer::updateFrameByCpu);
-        timer->start(1500); // Check every 500ms
+      //  connect(timer, &QTimer::timeout, this, &DesktopDancer::updateFrameByCpu);
+       // timer->start(1500); // Check every 500ms
         #endif
+
+        m_isPlayerMode = false; // Default to CPU mode
+        m_animationTimer = new QTimer(this);
+        m_cpuTimer = new QTimer(this);
+        connect(m_animationTimer, &QTimer::timeout, this, &DesktopDancer::nextFrame);
+        connect(m_cpuTimer, &QTimer::timeout, this, &DesktopDancer::updateFrameByCpu);
+        m_cpuTimer->start(1500); // Start CPU mode
     }
 
 public slots:
+
+    void togglePlayerMode(bool checked) {
+        m_isPlayerMode = checked;
+        if (m_isPlayerMode) {
+            m_cpuTimer->stop();
+            m_animationTimer->start(100);
+        } else {
+            m_animationTimer->stop();
+            m_cpuTimer->start(1500);
+        }
+    }
+
     void loadPngSequence(const QString &dirPath) {
         m_animationTimer->stop();
         m_frameFiles.clear();
@@ -89,11 +108,11 @@ public slots:
     }
 
     void selectFolder() {
-        #ifndef player
-        QString dirPath = QApplication::applicationDirPath() + "/hb01"; //QFileDialog::getExistingDirectory(this, "Select Character Sequence Folder", "");
-        #else
+      //  #ifndef player
+       // QString dirPath = QApplication::applicationDirPath() + "/hb01"; //QFileDialog::getExistingDirectory(this, "Select Character Sequence Folder", "");
+       // #else
         QString dirPath =QFileDialog::getExistingDirectory(this, "Select Character Sequence Folder", QApplication::applicationDirPath());
-        #endif
+       // #endif
         if (!dirPath.isEmpty()) {
             loadPngSequence(dirPath);
         } else if (m_frameFiles.isEmpty()) {
@@ -175,12 +194,20 @@ protected:
     // --- Right-Click System Context ---
     void contextMenuEvent(QContextMenuEvent *event) override {
         QMenu menu(this);
+
+        QAction *toggleModeAction = new QAction("Continuous Play Mode", this);
+                toggleModeAction->setCheckable(true); // Changes action to a toggle switch
+                toggleModeAction->setChecked(m_isPlayerMode);
+                connect(toggleModeAction, &QAction::toggled, this, &DesktopDancer::togglePlayerMode);
+
         QAction *changeAction = new QAction("Load Character Folder...", this);
         connect(changeAction, &QAction::triggered, this, &DesktopDancer::selectFolder);
 
         QAction *exitAction = new QAction("Close Player", this);
         connect(exitAction, &QAction::triggered, qApp, &QApplication::quit);
-
+        menu.addSeparator();
+        menu.addAction(toggleModeAction);
+                menu.addSeparator();
         menu.addAction(changeAction);
         menu.addSeparator();
         menu.addAction(exitAction);
@@ -239,6 +266,8 @@ private:
     QPropertyAnimation *m_fadeAnimation;
    // int m_currentFrame;
     int m_targetFrame;
+    bool m_isPlayerMode;
+    QTimer *m_cpuTimer;
    // QFileInfoList m_frameFiles;
 };
 
