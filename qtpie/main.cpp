@@ -20,12 +20,12 @@
 #include <QPropertyAnimation>
 //
 //#define player //starts in
-
+bool loaded;
 class DesktopDancer : public QLabel {
     Q_OBJECT
 
 public:
-    DesktopDancer(QString folderPath = QApplication::applicationDirPath()+"/hb01", QWidget *parent = nullptr) : QLabel(parent) {
+    DesktopDancer(QString folderPath = QApplication::applicationDirPath() + "/hb01", QWidget *parent = nullptr) : QLabel(parent) {
         // 1. Native macOS desktop overlay framing settings
      //   setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::SubWindow);
          setWindowFlags(Qt::FramelessWindowHint );
@@ -39,12 +39,7 @@ public:
 #ifdef player
         connect(m_animationTimer, &QTimer::timeout, this, &DesktopDancer::nextFrame); // plays all the frames
 #endif
-        if (!folderPath.isEmpty() && QDir(folderPath).exists()) {
-            loadPngSequence(folderPath);
-        } else {
-            // Trigger selection safely on application launch
-            QTimer::singleShot(100, this, &DesktopDancer::selectFolder);
-        }
+
 
 
         //new
@@ -64,6 +59,14 @@ public:
         m_cpuTimer = new QTimer(this);
         connect(m_animationTimer, &QTimer::timeout, this, &DesktopDancer::nextFrame);
         connect(m_cpuTimer, &QTimer::timeout, this, &DesktopDancer::updateFrameByCpu);
+qDebug() << folderPath;
+        if ( QDir(folderPath).exists()) {
+            loadPngSequence(folderPath);
+        } else {
+            // Trigger selection safely on application launch
+            QTimer::singleShot(100, this, &DesktopDancer::selectFolder);
+        }
+         m_animationTimer->stop();
         m_cpuTimer->start(1500); // Start CPU mode
     }
 
@@ -109,9 +112,12 @@ public slots:
 
     void selectFolder() {
       //  #ifndef player
-       // QString dirPath = QApplication::applicationDirPath() + "/hb01"; //QFileDialog::getExistingDirectory(this, "Select Character Sequence Folder", "");
-       // #else
-        QString dirPath =QFileDialog::getExistingDirectory(this, "Select Character Sequence Folder", QApplication::applicationDirPath());
+        QString dirPath;
+       // if (loaded){
+       //  dirPath = QApplication::applicationDirPath() + "/hb01"; //QFileDialog::getExistingDirectory(this, "Select Character Sequence Folder", "");
+      // }else{
+         dirPath =QFileDialog::getExistingDirectory(this, "Select Character Sequence Folder", QApplication::applicationDirPath());
+      //  }
        // #endif
         if (!dirPath.isEmpty()) {
             loadPngSequence(dirPath);
@@ -274,7 +280,7 @@ private:
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
 
-    QString initialDir = "";
+    QString initialDir = QApplication::applicationDirPath() +"/hb01";
     if (argc > 1) {
         initialDir = QString::fromLocal8Bit(argv[1]);
     }
