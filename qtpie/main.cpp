@@ -19,6 +19,7 @@
 #include <QGraphicsOpacityEffect>
 #include <QPropertyAnimation>
 //
+//#define player //starts in
 
 class DesktopDancer : public QLabel {
     Q_OBJECT
@@ -35,9 +36,9 @@ public:
         // 2. Setup Sequential PNG Core Engine
         m_currentFrame = 0;
         m_animationTimer = new QTimer(this);
-
-      //  connect(m_animationTimer, &QTimer::timeout, this, &DesktopDancer::nextFrame); // plays all the frames
-
+#ifdef player
+        connect(m_animationTimer, &QTimer::timeout, this, &DesktopDancer::nextFrame); // plays all the frames
+#endif
         if (!folderPath.isEmpty() && QDir(folderPath).exists()) {
             loadPngSequence(folderPath);
         } else {
@@ -53,8 +54,10 @@ public:
         m_fadeAnimation->setDuration(150); // Fast fade
 
         QTimer *timer = new QTimer(this);
+        #ifndef player
         connect(timer, &QTimer::timeout, this, &DesktopDancer::updateFrameByCpu);
         timer->start(1500); // Check every 500ms
+        #endif
     }
 
 public slots:
@@ -82,11 +85,15 @@ public slots:
         displayFrame(0);
 
         // Loop framing intervals (33ms ~ 30 FPS. Increase to 41ms/66ms if too fast)
-        m_animationTimer->start(400);
+        m_animationTimer->start(100);
     }
 
     void selectFolder() {
+        #ifndef player
         QString dirPath = QApplication::applicationDirPath() + "/hb01"; //QFileDialog::getExistingDirectory(this, "Select Character Sequence Folder", "");
+        #else
+        QString dirPath =QFileDialog::getExistingDirectory(this, "Select Character Sequence Folder", QApplication::applicationDirPath());
+        #endif
         if (!dirPath.isEmpty()) {
             loadPngSequence(dirPath);
         } else if (m_frameFiles.isEmpty()) {
