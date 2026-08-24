@@ -21,6 +21,8 @@
 //
 //#define player //starts in
 bool loaded;
+double temp;
+
 class DesktopDancer : public QLabel {
     Q_OBJECT
 
@@ -142,7 +144,7 @@ private:
            proc.start( QApplication::applicationDirPath() + "/test", QStringList() << "-c"); // Example smctemp call
 #endif
         proc.waitForFinished();
-        double temp = proc.readAllStandardOutput().toDouble();
+        temp = proc.readAllStandardOutput().toDouble();
 
         // 2. Map Temp to Image Index (Assuming e.g., 30-90°C range)
         int index = (int)((temp - 60) / 60 * m_frameFiles.size());
@@ -211,6 +213,14 @@ protected:
 
         QAction *exitAction = new QAction("Close Player", this);
         connect(exitAction, &QAction::triggered, qApp, &QApplication::quit);
+
+        // 2. Add as a non-clickable label
+        QAction *tempAction = new QAction(QString("CPU Temp: %1").arg(temp), this);
+        tempAction->setEnabled(false);
+        menu.addAction(tempAction);
+        menu.addSeparator();
+
+
         menu.addSeparator();
         menu.addAction(toggleModeAction);
                 menu.addSeparator();
